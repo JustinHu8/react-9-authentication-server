@@ -14,6 +14,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 // Mock user data
 const users = [
     {id: 1, username: 'student', password: 'password'},
+    {id: 2, username: 'admin', password: 'password'},
 ];
 
 app.use(cors({
@@ -33,6 +34,32 @@ app.post('/login', (req, res) => {
     // Sign a JWT token
     const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
     res.json({ token });
+});
+
+app.post('/register', (req, res) => {
+    const { username, password, email } = req.body;
+
+    // Validate input
+    if (!username || !password || !email) {
+        return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    // Check if the user already exists
+    const userExists = users.find(u => u.username === username);
+    if (userExists) {
+        return res.status(409).json({ message: 'Username already exists' });
+    }
+
+    // Add the new user
+    const newUser = {
+        id: users.length + 1,
+        username,
+        password, // Note: Hash passwords in real-world applications
+        email,
+    };
+    users.push(newUser);
+
+    res.status(201).json({ message: 'User registered successfully' });
 });
 
 app.listen(PORT, () => {
