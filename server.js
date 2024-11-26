@@ -14,6 +14,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 // Mock user data
 const users = [
     {id: 1, username: 'student', password: 'password'},
+    {id: 2, username: 'admin', password: 'password'},
 ];
 
 app.use(cors({
